@@ -23,7 +23,7 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private WebClient webClient;
+    private WebClient.Builder webClient;
 
     public void placeOrder(OrderRequest orderRequest) {
 
@@ -45,8 +45,8 @@ public class OrderService {
                 .map(OrderItems::getSku)
                 .toList();
 
-        InventoryResponse[] inventoryResponses = webClient.get()
-                .uri("http://localhost:8082/api/inventory", uriBuilder -> uriBuilder.queryParam("sku", skuListOrdered).build())
+        InventoryResponse[] inventoryResponses = webClient.build().get()
+                .uri("http://inventory/api/inventory", uriBuilder -> uriBuilder.queryParam("sku", skuListOrdered).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block();
